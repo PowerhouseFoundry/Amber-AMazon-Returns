@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#11283f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Foundry Returns">
+<link rel="apple-touch-icon" href="assets/amazon-returns.png">
+<title>Amazon Returns | Foundry Training</title>
+<style>
+  :root { --navy:#102d4d; --blue:#0479dc; --blue-dark:#004ea9; --orange:#ff9b00; --green:#05e641; --shadow:0 9px 32px rgba(11,36,63,.10); }
+  * {box-sizing:border-box}
+  html,body { width:100%; height:100%; margin:0; padding:0; overflow:hidden; }
+  body { font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; color:var(--navy); background:#e9eff6; }
+  button { font:inherit; -webkit-tap-highlight-color:transparent; cursor:pointer; }
+  button:focus-visible{outline:4px solid #ff9b00;outline-offset:3px}
+  .app { height:100vh; height:100dvh; min-height:0; width:100%; display:flex; flex-direction:column; overflow:hidden; }
+  .header { flex:0 0 auto; height:clamp(65px,10dvh,86px); background:#11283f; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:7px clamp(15px,3vw,38px); border-bottom:4px solid var(--orange); }
+  .brand { display:flex; align-items:center; gap:14px; min-width:0; }
+  .brand-logo { display:block; height:clamp(47px,7.3dvh,64px); width:clamp(63px,9.3dvh,76px); object-fit:cover; object-position:center; border-radius:6px; flex-shrink:0; }
+  .brand-caption { min-width:0; }
+  .brand-top { color:#a7bacd; font-size:clamp(9px,1.1vw,11px); font-weight:800; letter-spacing:.15em; white-space:nowrap; }
+  .brand-heading { color:#fff; font-size:clamp(18px,2.35vw,26px); font-weight:900; line-height:1.15; letter-spacing:-.035em; white-space:nowrap; }
+  .right-head { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+  .counter { padding:6px 14px; border:1px solid #597085; border-radius:11px; background:#1f3b54; color:#fff; text-align:center; min-width:105px; }
+  .counter-label { display:block; font-size:9px; line-height:1.1; letter-spacing:.14em; color:#b3c9d9; font-weight:800; }
+  .counter-value { font-size:clamp(17px,2.2vw,22px); line-height:1.16; font-weight:950; letter-spacing:.035em; font-variant-numeric:tabular-nums; }
+  .fullscreen-btn,.restart { min-width:40px;height:40px;display:grid;place-items:center;border:1px solid #60778d;border-radius:11px;color:#fff;background:transparent;line-height:1; }
+  .fullscreen-btn{padding:0 12px;font-size:13px;font-weight:900;letter-spacing:.06em;white-space:nowrap;grid-auto-flow:column;gap:7px;}
+  .fullscreen-btn svg{width:16px;height:16px;display:block;}
+  .fullscreen-btn:active,.restart:active{transform:scale(.97)}
+  .fullscreen-btn:hover,.restart:hover{background:#1f3b54}
+  .restart{font-size:25px;}
+  .workspace { display:grid; grid-template-columns:minmax(0,.98fr) minmax(0,1.02fr); gap:clamp(10px,1.7vw,22px); padding:clamp(12px,1.6vw,22px) clamp(12px,1.7vw,23px) 8px; min-height:0; flex:1; }
+  .location-card { min-width:0; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:space-around; background:#fff; border:clamp(4px,.65vw,7px) solid #0985eb; border-radius:24px; box-shadow:var(--shadow); padding:clamp(10px,2vw,25px); }
+  .location-label {font-weight:950; letter-spacing:-.015em; font-size:clamp(24px,3.6vw,46px); line-height:1; text-align:center; }
+  .location-code { display:grid;place-items:center; width:100%; height:clamp(130px,39%,320px); border-radius:22px; background:linear-gradient(145deg,#fff500,#ffd700); box-shadow:inset 0 -4px 0 rgba(224,148,0,.12); border:2px solid #f5d900; font-size:clamp(75px,12vw,170px); font-weight:950; line-height:1; letter-spacing:-.03em; font-variant-numeric:tabular-nums; white-space:nowrap; padding:0 .12em 0 .08em; }
+  .arrow {width:min(76%,315px);height:clamp(69px,18%,138px);display:block;filter:drop-shadow(0 5px 0 #d6eafc); }
+  .arrow path{fill:#0784f2}
+  .shelf-card { min-width:0; min-height:0; padding:clamp(8px,1.2vw,16px); background:linear-gradient(150deg,#f7fafc,#e4edf5); border:2px solid #d4e0eb; border-radius:24px; box-shadow:var(--shadow); display:flex; flex-direction:column; align-items:center; overflow:hidden; }
+  .shelf-head { flex:0 0 auto; color:#244461; font-weight:950; font-size:clamp(17px,2.25vw,28px); letter-spacing:.015em; line-height:1.1; text-align:center; margin:0 0 clamp(6px,1.3dvh,13px); }
+  .rack-wrap { width:100%; min-height:0; flex:1; display:flex;align-items:stretch;justify-content:center; }
+  .rack {position:relative; height:100%; width:min(100%, 540px); min-height:0; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); grid-template-rows:repeat(3,minmax(0,1fr)); gap:clamp(6px,1.2vw,12px); border:clamp(10px,1.6vw,17px) solid #0666ca; border-top-width:clamp(13px,1.7vw,19px);border-bottom-width:clamp(9px,1.4vw,16px); border-radius:5px 5px 2px 2px; background:linear-gradient(90deg,#0455b2,#087fea 50%,#01489c); box-shadow:inset 0 0 0 2px #38a1ff,0 8px 14px #22507725; }
+  .rack:before,.rack:after{ content:""; position:absolute; top:0; bottom:0; width:4px; background:repeating-linear-gradient(to bottom,#b4d2ff 0 4px,transparent 4px 21px); opacity:.5;z-index:0;pointer-events:none; }
+  .rack:before{left:-9px}.rack:after{right:-9px}
+  .slot { min-height:0; min-width:0; background:linear-gradient(135deg,#d7e2ed,#f1f5f8 42%,#c2d2e0); display:flex; flex-direction:column; position:relative; align-items:center; justify-content:flex-end; isolation:isolate; overflow:visible; }
+  .slot:before{content:"";position:absolute;left:0;right:0;bottom:clamp(23px,3.6dvh,33px);height:clamp(8px,1.5dvh,13px);background:linear-gradient(#e7c69e,#caa174);box-shadow:0 2px 0 #9f805d;z-index:0}
+  .tote-image { width:94%; height:auto; max-height:calc(100% - clamp(31px,4.4dvh,42px)); object-fit:contain; object-position:center bottom; display:block; z-index:1; flex-shrink:1; min-height:0; filter:drop-shadow(0 3px 1px #30445737); }
+  .slot-number {position:relative;flex:0 0 auto; display:grid;place-items:center; background:#fff; min-width:clamp(36px,5.5vw,60px); height:clamp(24px,4dvh,41px); padding:0 6px; border-radius:7px; margin-top:-1px; margin-bottom:clamp(0px,.35dvh,4px); z-index:2; color:#082a54; font-size:clamp(16px,2.3vw,28px); font-weight:950; line-height:1; box-shadow:0 2px 5px #0b2a482e; }
+  .slot.active {background:#d7fadd; }
+  .slot.active .tote-image{filter:drop-shadow(0 0 10px rgba(0,255,44,.9)) drop-shadow(0 2px 1px #30445737);}
+  .slot.active:after {content:""; position:absolute; z-index:5; pointer-events:none; inset:clamp(1px,.3vw,4px); border:clamp(6px,.85vw,10px) solid #06ed30; border-radius:12px; box-shadow:0 0 0 3px #b4ffb8 inset,0 0 23px 6px #11ff43,0 0 0 3px #077e23; }
+  .slot.active .slot-number {background:#03df34;color:#053b18;box-shadow:0 0 12px 4px #22ff5580;z-index:6;}
+  .slot.active .mark { display:grid; }
+  .mark{display:none;place-items:center;z-index:7;position:absolute;top:3px;right:3px;border-radius:50%;width:clamp(22px,2.8vw,32px);height:clamp(22px,2.8vw,32px);background:#04cc2a;color:#fff;border:2px solid white;box-shadow:0 3px 9px #032b0d60;font-weight:950;font-size:clamp(13px,1.8vw,21px);}
+  .action-area { flex:0 0 auto; height:clamp(78px,11dvh,100px); display:flex; justify-content:center; align-items:center; padding:7px 16px max(7px,env(safe-area-inset-bottom)); gap:12px; background:#e9eff6; }
+  .next-btn { display:flex;align-items:center;justify-content:center; gap:clamp(15px,3vw,32px); height:100%; width:min(100%,520px); min-height:54px; border-radius:16px; border:3px solid #05802a; background:linear-gradient(#04d440,#03a52d); color:white; box-shadow:inset 0 2px 0 #6af18e,0 5px 0 #08742b; font-size:clamp(25px,3.3vw,35px); font-weight:950; letter-spacing:.055em; }
+  .next-btn:active{box-shadow:inset 0 2px 2px #08742b;transform:translateY(3px)}
+  .next-arrow {font-size:1.2em;line-height:1;}
+  .hint { color:#627891;font-weight:750;font-size:clamp(10px,1.1vw,13px);text-align:center; }
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  @media (orientation:portrait) {
+    .workspace {grid-template-columns:minmax(0,1fr); grid-template-rows:minmax(0,.43fr) minmax(0,1fr);padding:10px 12px 4px;gap:10px;}
+    .location-card {display:grid; grid-template-columns:minmax(0,1fr) minmax(0,2fr) minmax(0,.9fr); gap:9px; align-items:center;justify-items:center;padding:10px 13px;border-radius:19px;}
+    .location-label {font-size:clamp(19px,3.5vw,36px);}
+    .location-code {height:86%;font-size:clamp(65px,13vw,138px);border-radius:16px;}
+    .arrow {height:72%;width:100%;}
+    .shelf-card {padding:8px;border-radius:20px;}
+    .shelf-head {font-size:clamp(20px,3.3vw,28px);margin-bottom:6px;}
+    .rack {width:min(100%,540px);}
+    .slot-number {font-size:clamp(18px,3vw,26px);}
+  }
+  @media (max-height:650px) and (orientation:landscape) {
+    .header {height:58px;padding-top:5px;padding-bottom:5px}
+    .brand-logo {height:43px;width:51px}
+    .workspace {padding:7px 10px 1px;gap:8px}
+    .location-card {border-radius:15px;padding:8px}
+    .shelf-card {border-radius:15px;padding:5px}
+    .location-label {font-size:24px}
+    .location-code {font-size:clamp(65px,11vw,130px);}
+    .action-area {height:66px;}
+    .next-btn {font-size:23px;}
+    .shelf-head {font-size:16px;margin-bottom:3px;}
+  }
+  @media (max-width:640px) and (orientation:portrait) {
+    .header {height:65px;}
+    .brand-logo {height:47px;width:56px}
+    .brand-top{font-size:8px}
+    .brand-heading{font-size:17px}
+    .counter{min-width:72px;padding:5px 7px}
+    .counter-label {font-size:8px}
+    .counter-value {font-size:16px}
+    .right-head{gap:5px}
+    .fullscreen-btn{min-width:32px;height:32px;padding:0 8px;font-size:10px;gap:4px}
+    .fullscreen-btn svg{width:12px;height:12px}
+    .restart{min-width:32px;height:32px;font-size:21px}
+    .location-card {grid-template-columns:1fr 1.65fr .65fr}
+    .location-label {font-size:clamp(16px,4vw,23px)}
+    .location-code {font-size:clamp(47px,13vw,75px)}
+    .action-area{height:77px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="brand">
+      <img class="brand-logo" src="assets/amazon-returns.png" alt="Amazon Returns training logo">
+      <div class="brand-caption"><div class="brand-top">THE FOUNDRY AMAZON</div><div class="brand-heading">RETURNS SORT STATION</div></div>
+    </div>
+    <div class="right-head">
+      <div class="counter" aria-live="off"><span class="counter-label">PARCEL</span><span id="counter" class="counter-value">01 / 25</span></div>
+      <button id="fullscreenBtn" class="fullscreen-btn" type="button" title="Full screen" aria-label="Open full screen mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M21 16v5h-5M3 16v5h5"/></svg><span id="fullscreenLabel">FULL SCREEN</span></button>
+      <button id="restart" class="restart" type="button" title="Start a new shift" aria-label="Start a new shift">↻</button>
+    </div>
+  </header>
+  <main class="workspace">
+    <section class="location-card" aria-label="Parcel location">
+      <div class="location-label">LOCATION</div>
+      <div class="location-code" id="locationCode" aria-live="polite">A-3</div>
+      <svg class="arrow" viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg" aria-label="Move parcel to the highlighted tote" role="img"><path d="M24 37 Q8 37 8 54 V66 Q8 83 24 83 H190 V107 Q190 124 209 108 L284 74 Q301 60 284 46 L209 12 Q190 -4 190 14 V37 Z"/></svg>
+    </section>
+    <section class="shelf-card" aria-label="Tote sorting destination">
+      <h1 class="shelf-head">PUT IN THE GREEN TOTE</h1>
+      <div class="rack-wrap"><div class="rack" id="rack" aria-label="Totes 1 to 9"></div></div>
+    </section>
+  </main>
+  <div class="action-area">
+    <button id="next" class="next-btn" type="button"><span id="nextLabel">NEXT</span><span class="next-arrow" aria-hidden="true">➜</span></button>
+  </div>
+  <div id="announcement" class="sr-only" role="status" aria-live="polite"></div>
+</div>
+<script>
+(() => {
+  'use strict';
+  const SAVE_KEY='powerhouse-amazon-returns-visual-sort-v1';
+  const LEGACY_KEY='west-silc-powerhouse-parcel-sort-v1';
+  const $ = id => document.getElementById(id);
+  const positions='ABCDE'.split('').flatMap(letter => [1,2,3,4,5].map(n=>`${letter}-${n}`));
+  function shuffle(input){
+    const a=[...input];
+    for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+    return a;
+  }
+  function newShift(){
+    // First screen intentionally matches the approved A-3 / Tote 3 example.
+    // The remaining 24 locations are mixed, with an even distribution of totes.
+    const restLocations=shuffle(positions.filter(p=>p!=='A-3'));
+    const totePool=[...Array(3)].flatMap(()=>[1,2,3,4,5,6,7,8,9]);
+    for(const n of [3,4,7]) totePool.splice(totePool.indexOf(n),1);
+    const totes=shuffle(totePool);
+    return {jobs:[{shelf:'A-3',tote:3},...restLocations.map((shelf,i)=>({shelf,tote:totes[i]}))],index:0};
+  }
+  const valid = state => state && Array.isArray(state.jobs) && state.jobs.length===25
+      && Number.isInteger(state.index) && state.index>=0 && state.index<=25
+      && state.jobs.every(job=>positions.includes(job.shelf) && Number.isInteger(job.tote) && job.tote>=1 && job.tote<=9);
+  function getJSON(key){try{return JSON.parse(localStorage.getItem(key));}catch(e){return null;}}
+  let state=getJSON(SAVE_KEY);
+  if(!valid(state)){
+    const old=getJSON(LEGACY_KEY);
+    state=valid(old) ? {jobs:old.jobs,index:old.index} : newShift();
+  }
+  function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(state));}catch(e){}}
+  const rack=$('rack');
+  const slots=[];
+  function isFullscreen(){
+    return !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+  }
+  async function toggleFullscreen(){
+    const root=document.documentElement;
+    try{
+      if(!isFullscreen()){
+        if(root.requestFullscreen) await root.requestFullscreen();
+        else if(root.webkitRequestFullscreen) root.webkitRequestFullscreen();
+        else if(document.body.webkitRequestFullscreen) document.body.webkitRequestFullscreen();
+        else throw new Error('Fullscreen not supported');
+      }else{
+        if(document.exitFullscreen) await document.exitFullscreen();
+        else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
+        else if(document.msExitFullscreen) document.msExitFullscreen();
+      }
+    }catch(e){
+      $('announcement').textContent='Full screen is not available on this device or browser.';
+      alert('Full screen is not available on this iPad/browser. If using Safari, try Add to Home Screen for a more app-like view.');
+    }
+    updateFullscreenButton();
+  }
+  function updateFullscreenButton(){
+    const open=isFullscreen();
+    $('fullscreenLabel').textContent=open?'EXIT FULL SCREEN':'FULL SCREEN';
+    $('fullscreenBtn').setAttribute('aria-label', open?'Exit full screen mode':'Open full screen mode');
+    $('fullscreenBtn').title=open?'Exit full screen':'Full screen';
+  }
+  for(let n=1;n<=9;n++){
+    const cell=document.createElement('div'); cell.className='slot';cell.dataset.tote=String(n);
+    cell.setAttribute('aria-label',`Tote ${n}`);
+    const image=document.createElement('img');image.src='assets/tote.png';image.alt='';image.className='tote-image';image.draggable=false;
+    const number=document.createElement('div');number.className='slot-number';number.textContent=String(n);
+    const check=document.createElement('div');check.className='mark';check.textContent='✓';check.setAttribute('aria-hidden','true');
+    cell.append(image,number,check);rack.append(cell);slots.push(cell);
+  }
+  function render(){
+    const finished=state.index>=state.jobs.length;
+    const job=state.jobs[Math.min(state.index,24)];
+    $('locationCode').textContent=finished?'✓':job.shelf;
+    $('counter').textContent=finished?'25 / 25':`${String(state.index+1).padStart(2,'0')} / 25`;
+    $('nextLabel').textContent=finished?'NEW SHIFT':'NEXT';
+    document.querySelector('.shelf-head').textContent=finished?'ALL PARCELS SORTED!':'PUT IN THE GREEN TOTE';
+    slots.forEach((cell,i)=>{const selected=!finished&&i===job.tote-1;cell.classList.toggle('active',selected);cell.setAttribute('aria-label',`Tote ${i+1}${selected?', selected':''}`);});
+    $('announcement').textContent=finished?'All 25 parcels sorted. Well done.':`Location ${job.shelf}. Put it in tote ${job.tote}. Parcel ${state.index+1} of 25.`;
+    save();
+  }
+  $('next').addEventListener('click',()=>{
+    if(state.index>=25){if(!confirm('Start a new 25-parcel shift?'))return;state=newShift();}
+    else {state.index+=1;}
+    render();
+  });
+  $('restart').addEventListener('click',()=>{
+    if(!confirm('Start a new shift? The current progress will be replaced.'))return;
+    state=newShift();render();
+  });
+  $('fullscreenBtn').addEventListener('click',toggleFullscreen);
+  document.addEventListener('fullscreenchange',updateFullscreenButton);
+  document.addEventListener('webkitfullscreenchange',updateFullscreenButton);
+  updateFullscreenButton();
+  render();
+})();
+</script>
+</body>
+</html>
